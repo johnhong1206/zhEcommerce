@@ -19,17 +19,14 @@ import {
   updateFilters,
 } from "../../features/cartSlice";
 import { selectDarkmode } from "../../features/darkmodeSlice";
-
 import { selectmenuIsOpen } from "../../features/menuSlice";
+
+// components
 const Header = dynamic(() => import("../../components/Header"));
 const FilterProducts = dynamic(() => import("../../components/FilterProducts"));
 const Menu = dynamic(() => import("../../components/Menu"));
 
 function index({ products }) {
-  useEffect(() => {
-    dispatch(addProducts(products));
-  }, [products]);
-
   const dispatch = useDispatch();
   const darkMode = useSelector(selectDarkmode);
 
@@ -245,7 +242,7 @@ function index({ products }) {
               </p>
             </div>
             <div className="grid grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3 mx-auto">
-              {!!filterproducts?.length &&
+              {!!filterproducts?.length ? (
                 filterproducts.map((product) => (
                   <FilterProducts
                     products={products}
@@ -253,7 +250,10 @@ function index({ products }) {
                     title={product.name}
                     {...product}
                   />
-                ))}
+                ))
+              ) : (
+                <p>No Products</p>
+              )}
             </div>
           </div>
         </div>

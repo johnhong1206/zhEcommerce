@@ -15,12 +15,8 @@ import { useSelector } from "react-redux";
 import { selectmenuIsOpen } from "../../features/menuSlice";
 
 function ProductScreen({ product, products }) {
-  //const dispatch = useDispatch();
-  //const product = useSelector(selectOpenProduct);
   const darkMode = useSelector(selectDarkmode);
   const MenuNav = useSelector(selectmenuIsOpen);
-
-  console.log(products);
 
   return (
     <div className={`${darkMode ? "bg-gray-800" : "bg-gray-100"}`}>

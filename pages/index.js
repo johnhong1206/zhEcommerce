@@ -27,8 +27,6 @@ export default function Home({ products }) {
   const user = useSelector(selectUser);
   const [userData, setUserData] = useState([]);
 
-  console.log("product", products?.length);
-
   function getUserData() {
     const unsubscribe = db
       .collection("users")
@@ -90,7 +88,6 @@ export default function Home({ products }) {
       <Header products={products} />
       <main className="mx-auto max-w-screen">
         <Banner />
-
         <ProductFeeds products={products} />
       </main>
       {MenuNav && <Menu />}
@@ -98,7 +95,7 @@ export default function Home({ products }) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context, res) {
   const ref = db.collection("products");
 
   const productRes = await ref.get();

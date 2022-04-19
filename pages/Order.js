@@ -23,6 +23,7 @@ function Order({ products }) {
   const darkMode = useSelector(selectDarkmode);
   const [orders, setOrders] = useState([]);
   const MenuNav = useSelector(selectmenuIsOpen);
+
   useEffect(() => {
     if (user) {
       db.collection("users")
@@ -40,7 +41,7 @@ function Order({ products }) {
     } else {
       setOrders([]);
     }
-  }, [user]);
+  }, [user, db]);
 
   return (
     <div className={` ${darkMode ? "bg-gray-800" : "bg-gray-100"}`}>

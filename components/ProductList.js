@@ -39,6 +39,7 @@ function ProductList({
           </p>
           <Link href={`/product/${id}`}>
             <Image
+              quality={50}
               src={images}
               height={300}
               width={300}
