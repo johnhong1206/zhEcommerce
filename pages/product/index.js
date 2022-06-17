@@ -12,7 +12,6 @@ import { getUniqueValues } from "../../utils/helpers";
 //redux
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addProducts,
   clearFilters,
   selectFilteredProducts,
   selectProducts,
@@ -264,15 +263,11 @@ function index({ products }) {
 }
 
 export default index;
-export async function getServerSideProps(context) {
-  const ref = db.collection("products").doc(context.query.id);
-
-  const productRes = await ref.get();
-  const product = {
-    id: productRes.id,
-    ...productRes.data(),
-  };
-
+export async function getServerSideProps({ context, res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
   const allProductRef = db.collection("products");
   const AllproductRes = await allProductRef.get();
   const products = AllproductRes.docs.map((product) => ({
@@ -282,7 +277,6 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      product: product,
       products: products,
     },
   };

@@ -95,7 +95,11 @@ export default function Home({ products }) {
   );
 }
 
-export async function getServerSideProps(context, res) {
+export async function getServerSideProps({ res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
   const ref = db.collection("products");
 
   const productRes = await ref.get();
