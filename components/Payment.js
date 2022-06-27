@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Currency from "react-currency-formatter";
+import toast from "react-hot-toast";
 
 //config & firebase
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -70,7 +71,7 @@ function Payment({ setPhase }) {
   const userPoint = useSelector(selectUserPoint);
   const [pricePoint, setPricePoint] = useState(0);
   const newPricepoint = useSelector(selectPricePoint);
-  const [finalPoint, setFinalPoint] = useState(0);
+  const [finalPoint, setFinalPoint] = useState(Number(0));
   const newFinalPoint = useSelector(selectFinalPoint);
   const [redem, setRedem] = useState(false);
   const [coin, setCoin] = useState(Number(0));
@@ -82,8 +83,6 @@ function Payment({ setPhase }) {
 
   //price
   const finalPrice = useSelector(selectFinalPrice);
-
-  console.log("clientSecret", clientSecret);
 
   useEffect(() => {
     const unsubscribe = db
@@ -112,7 +111,7 @@ function Payment({ setPhase }) {
     let newFinalPoint = Math.round(
       Number(userPoint) + Number(newPricepoint) - Number(coin * 100)
     );
-    setFinalPoint(newFinalPoint);
+    setFinalPoint(Number(newFinalPoint));
   });
 
   useEffect(() => {
@@ -175,16 +174,21 @@ function Payment({ setPhase }) {
 
   const add = (item) => {
     let ind = _.findIndex(cart, { id: item.id });
+    toast.success(`One set of ${item?.name} is added ...`);
+
     return dispatch(addQuantity(ind));
   };
 
   const remove = (item) => {
     if (item.quantity != 1) {
       let ind = _.findIndex(cart, { id: item.id });
+      toast.success(`One set of ${item?.name} is remove ...`);
+
       return dispatch(removeQuantity(ind));
     }
     let ind = _.findIndex(cart, { id: item.id });
     dispatch(removeFromCart(ind));
+    toast.success(`${item?.name} Remove from cart`);
   };
 
   const calcTotalCost = () => {
@@ -249,12 +253,11 @@ function Payment({ setPhase }) {
     getClientSecret();
   }, [disabled, cart]);
 
-  console.log("ClientSecret", clientSecret);
-
   const handleSubmit = async (event) => {
     // do all the fancy stripe stuff...
     event.preventDefault();
     setProcessing(true);
+    toast.loading(`Processing your payment , Please be patient...`);
 
     const payload = await stripe
       .confirmCardPayment(clientSecret, {
@@ -310,6 +313,7 @@ function Payment({ setPhase }) {
         dispatch(emptycCart());
         dispatch(resetShipping());
         setPhase("done");
+        toast.success(`Your Order has been made`);
       });
   };
 

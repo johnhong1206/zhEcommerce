@@ -18,6 +18,7 @@ function ProductFeeds({ products }) {
           price={product.price}
           images={product.imageUrl}
           description={product.description}
+          product={product}
         />
       ))}
       <img
@@ -35,6 +36,7 @@ function ProductFeeds({ products }) {
             price={product.price}
             images={product.imageUrl}
             description={product.description}
+            product={product}
           />
         ))}
       </div>
@@ -47,6 +49,7 @@ function ProductFeeds({ products }) {
           price={product.price}
           images={product.imageUrl}
           description={product.description}
+          product={product}
         />
       ))}
       <img
@@ -63,6 +66,7 @@ function ProductFeeds({ products }) {
           price={product.price}
           images={product.imageUrl}
           description={product.description}
+          product={product}
         />
       ))}
     </div>

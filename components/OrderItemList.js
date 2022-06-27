@@ -46,7 +46,7 @@ function OrderItemList({ order, id }) {
 
   return (
     <div
-      className={`w-full h-full xs:w-11/12 p-10 mt-10 xs: space-y-4 relative cursor-pointer transition duration-200 ease-in transform sm:hover:scale-105 ${
+      className={`w-full h-full xs:w-11/12 p-10 mt-10 xs: space-y-4 relative cursor-pointer transition duration-200 ease-in transform hover:shadow-lg hover:shadow-pink-400 ${
         darkMode ? "text-gray-200 bg-gray-900" : "text-gray-800 bg-gray-200"
       } ${received ? "opacity-100" : "opacity-70 border-blue-900 border"}`}
     >

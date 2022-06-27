@@ -5,6 +5,7 @@ import Link from "next/link";
 import Currency from "react-currency-formatter";
 import React, { useState, useEffect } from "react";
 import Fade from "react-reveal/Fade";
+import toast from "react-hot-toast";
 
 //rdux
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +21,6 @@ import { selectDarkmode } from "../features/darkmodeSlice";
 //import { selectProduct } from "../features/productSlice";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { selectmenuIsOpen } from "../features/menuSlice";
-import db from "../config/firebase";
 const SuggestProduct = dynamic(() => import("./SuggestProduct"));
 
 let _ = require("lodash");
@@ -45,22 +45,17 @@ function ProductDetails({
   const all_products = useSelector(selectProducts);
   const [suggestProducts, setSuggestProducts] = useState([]);
 
-  console.log("all_products", all_products);
-
-  const suggestProductRef = db
-    .collection("products")
-    .where("category", "==", category);
-
-  //const [suggestProducts] = useCollection(category && suggestProductRef);
-
   const addToCartHandler = (item) => {
     if (cart.find((product) => product.id == item.id)) {
       let ind = _.findIndex(cart, { id: item.id });
+
+      toast.success(`${item?.name} Quantity update ...`);
       return dispatch(addQuantity(ind));
     }
 
     let tempItem = { ...item, quantity: 1 };
     dispatch(addToCart(tempItem));
+    toast.success(`${tempItem?.name} Add to Cart...`);
   };
 
   const remove = (item) => {
@@ -68,10 +63,12 @@ function ProductDetails({
 
     if (tempItem.quantity != 1) {
       let ind = _.findIndex(cart, { id: item.id });
+      toast.success(`${item?.name} Quantity update ...`);
       return dispatch(removeQuantity(ind));
     }
     let ind = _.findIndex(cart, { _id: item._id });
     dispatch(removeFromCart(ind));
+    toast.success(`${tempItem?.name} remove from Cart...`);
   };
 
   const itemSelect = () => {
@@ -86,7 +83,6 @@ function ProductDetails({
     );
   }, [category]);
 
-  console.log("suggestProducts", suggestProducts);
   return (
     <>
       <Fade bottom>

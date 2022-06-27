@@ -17,7 +17,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { selectDarkmode } from "../features/darkmodeSlice";
 import { openmenu } from "../features/menuSlice";
-import { emptycCart, selectCart } from "../features/cartSlice";
+import { emptycCart, selectCart, selectProducts } from "../features/cartSlice";
 import { logout, selectUser } from "../features/userSlice";
 import { closeModal } from "../features/modalSlice";
 import { cancleDiscount } from "../features/discountSlice";
@@ -27,8 +27,10 @@ import { resetShipping } from "../features/shippingSlice";
 //firebase
 import { auth } from "../config/firebase";
 
-function Header({ products }) {
-  const dataList = products;
+function Header() {
+  const all_products = useSelector(selectProducts);
+
+  const dataList = all_products;
   const router = useRouter();
   const darkMode = useSelector(selectDarkmode);
   const dispatch = useDispatch();

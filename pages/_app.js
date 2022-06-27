@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import { Toaster } from "react-hot-toast";
 
 //redux
 import { Provider } from "react-redux";
@@ -24,7 +25,10 @@ function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Component {...pageProps} />
+        <div>
+          <Component {...pageProps} />
+        </div>
+        <Toaster />
       </PersistGate>
     </Provider>
   );

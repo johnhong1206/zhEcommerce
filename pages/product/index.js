@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import InputRange from "react-input-range";
 import "react-input-range/lib/css/index.css";
+import Fade from "react-reveal/Fade";
 
 //conffig
 import db from "../../config/firebase";
@@ -243,12 +244,17 @@ function index({ products }) {
             <div className="grid grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3 mx-auto">
               {!!filterproducts?.length ? (
                 filterproducts.map((product) => (
-                  <FilterProducts
-                    products={products}
-                    key={product.id}
-                    title={product.name}
-                    {...product}
-                  />
+                  <>
+                    <Fade bottom>
+                      <FilterProducts
+                        products={products}
+                        key={product.id}
+                        title={product.name}
+                        {...product}
+                        product={product}
+                      />
+                    </Fade>
+                  </>
                 ))
               ) : (
                 <p>No Products</p>

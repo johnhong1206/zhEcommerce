@@ -23,8 +23,6 @@ function Cart() {
   const MenuNav = useSelector(selectmenuIsOpen);
   const user = useSelector(selectUser);
 
-  console.log("promise", promise);
-
   return (
     <div>
       <Head>

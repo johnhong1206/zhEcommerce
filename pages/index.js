@@ -25,8 +25,28 @@ export default function Home({ products }) {
   const darkMode = useSelector(selectDarkmode);
   const MenuNav = useSelector(selectmenuIsOpen);
   const user = useSelector(selectUser);
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState(null);
 
+  const getuserData = async () => {
+    await db
+      .collection("users")
+      .doc(user?.uid)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          // console.log("Document data:", doc.data());
+          const data = doc.data();
+          setUserData(data);
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
+  };
+  console.log("data", userData);
   function getUserData() {
     const unsubscribe = db
       .collection("users")
@@ -35,10 +55,8 @@ export default function Home({ products }) {
     return unsubscribe;
   }
   useEffect(() => {
-    if (user) {
-      getUserData();
-    }
-  }, [user]);
+    getuserData();
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -70,7 +88,7 @@ export default function Home({ products }) {
         );
       }
     });
-  }, [user]);
+  }, [userData]);
 
   useEffect(() => {
     if (products?.length > 0) {

@@ -3,10 +3,21 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Currency from "react-currency-formatter";
 import Fade from "react-reveal/Fade";
+import toast from "react-hot-toast";
 
 //icons
-import { FaRegEye } from "react-icons/fa";
+import { FaRegEye, FaPlus, FaMinus, FaShoppingCart } from "react-icons/fa";
 import { AiOutlineLogin } from "react-icons/ai";
+import {
+  addQuantity,
+  addToCart,
+  removeFromCart,
+  removeQuantity,
+  selectCart,
+} from "../features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../features/userSlice";
+let _ = require("lodash");
 
 function ProductList({
   id,
@@ -16,15 +27,39 @@ function ProductList({
   description,
   category,
   rating,
+  product,
 }) {
+  const user = useSelector(selectUser);
   const router = useRouter();
-
-  const enterProductDetails = () => {
-    router.push(`/product/${id}`);
-  };
+  const cart = useSelector(selectCart);
+  const dispatch = useDispatch();
 
   const navtoLogin = (e) => {
     router.push("/login");
+  };
+  const addToCartHandler = () => {
+    toast.success(`${product?.name} Add to Cart...`);
+    if (cart.find((cartproduct) => cartproduct.id == product.id)) {
+      let ind = _.findIndex(cart, { id: product.id });
+
+      return dispatch(addQuantity(ind));
+    }
+    let tempItem = { ...product, quantity: 1 };
+    dispatch(addToCart(tempItem));
+  };
+  const remove = () => {
+    let tempItem = cart[_.findIndex(cart, { id: product.id })];
+    if (!!tempItem == false) {
+      false;
+    }
+    if (!!tempItem == true && tempItem.quantity != 1) {
+      let ind = _.findIndex(cart, { id: product.id });
+      toast.success(`${product?.name} remove from Cart...`);
+      return dispatch(removeQuantity(ind));
+    }
+    let ind = _.findIndex(cart, { _id: product._id });
+    dispatch(removeFromCart(ind));
+    toast.success(`${product?.name} remove from Cart...`);
   };
 
   return (
@@ -65,14 +100,35 @@ function ProductList({
             <Currency quantity={price} currency="MYR" />
           </div>
           <div className="absolute bottom-3 left-5 right-5  flex item-center justify-center space-x-6">
-            <FaRegEye
-              onClick={enterProductDetails}
-              className="w-8 h-8 p-1 text-gray-200 rounded-full bg-purple-600 hover:bg-purple-800 cursor-pointer"
+            <Link href={`/product/${id}`}>
+              <FaRegEye className="w-6 h-6 p-1 text-gray-200 rounded-full bg-purple-600 hover:bg-purple-800 cursor-pointer" />
+            </Link>
+
+            <FaMinus
+              className="w-6 h-6 p-1 text-gray-200 rounded-full bg-red-600 hover:bg-red-800 cursor-pointer"
+              onClick={remove}
             />
-            <AiOutlineLogin
-              onClick={navtoLogin}
-              className="w-8 h-8 p-1 text-gray-200 rounded-full bg-blue-600 cursor-pointer hover:bg-blue-800"
+            <div className=" flex flex-col items-center justify-center">
+              <p className="w-6 h-6 leading-6 text-center text-xl text-gray-200 rounded-full bg-gray-900 select-none">
+                {_.findIndex(cart, { id: product.id }) != -1
+                  ? cart[_.findIndex(cart, { id: product.id })].quantity
+                  : "0"}
+              </p>
+            </div>
+            <FaPlus
+              className="w-6 h-6 p-1 text-gray-200 rounded-full bg-green-600 hover:bg-green-800 cursor-pointer "
+              onClick={addToCartHandler}
             />
+            {!user ? (
+              <AiOutlineLogin
+                onClick={navtoLogin}
+                className="w-6 h-6 p-1 text-gray-200 rounded-full bg-blue-600 cursor-pointer hover:bg-blue-800"
+              />
+            ) : (
+              <Link href={`/Cart`}>
+                <FaShoppingCart className="w-6 h-6 p-1 text-gray-200 rounded-full bg-cyan-600 hover:bg-cyan-800 cursor-pointer " />
+              </Link>
+            )}
           </div>
         </div>
       </Fade>

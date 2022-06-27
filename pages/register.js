@@ -7,13 +7,15 @@ import dynamic from "next/dynamic";
 const Header = dynamic(() => import("../components/Header"));
 
 //redux
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectDarkmode } from "../features/darkmodeSlice";
 
 //firebase
 import db, { auth } from "../config/firebase";
+import { login } from "../features/userSlice";
 
 function register() {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,25 +61,14 @@ function register() {
         const uid = response.user.uid;
 
         const usersRef = db.collection("users");
-        usersRef
-          .doc(uid)
-          .set({
-            uid: response.user.uid,
-            email: email,
-            username: username,
-            photoURL:
-              "https://thumbs.dreamstime.com/b/no-image-available-icon-flat-vector-no-image-available-icon-flat-vector-illustration-132482953.jpg",
-          })
-          .then((response) => {
-            usersRef.doc(uid).collection("delivery").doc("address1").set({
-              address: "address",
-              street: "street",
-              postcode: "postcode",
-              city: "city",
-              state: "state",
-              ids: "Address 1",
-            });
-          });
+        usersRef.doc(uid).set({
+          uid: response.user.uid,
+          email: email,
+          username: username,
+          point: Number(0),
+          photoURL:
+            "https://thumbs.dreamstime.com/b/no-image-available-icon-flat-vector-no-image-available-icon-flat-vector-illustration-132482953.jpg",
+        });
       })
       .then((authUser) => {
         const Updateuser = auth.currentUser;
@@ -87,10 +78,10 @@ function register() {
             "https://thumbs.dreamstime.com/b/no-image-available-icon-flat-vector-no-image-available-icon-flat-vector-illustration-132482953.jpg",
         });
       })
-      .then(() => {})
       .catch((error) => alert(error.message))
-      .then((auth) => {
+      .then(() => {
         //create user and logged in, redirect to homepage
+
         router.replace("/");
       });
   };

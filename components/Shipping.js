@@ -7,6 +7,7 @@ import { updateShipping, selectShipping } from "../features/shippingSlice";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { selectDarkmode } from "../features/darkmodeSlice";
 import { useRouter } from "next/router";
+import db from "../config/firebase";
 
 function Shipping({ setPhase }) {
   const dispatch = useDispatch();
@@ -62,11 +63,32 @@ function Shipping({ setPhase }) {
       shippingCost: Number(shippingMethod),
     };
     dispatch(updateShipping(payload));
+
+    if (!!contactNumber === false && contactNumber?.length > 0) {
+      db.collection("users").doc(user?.uid).set(
+        {
+          contact: contactNumber,
+        },
+        { merge: true }
+      );
+    }
+    if (!!shippingAddress === false && shippingAddress?.length > 0) {
+      db.collection("users").doc(user?.uid).set(
+        {
+          address: shippingAddress,
+        },
+        { merge: true }
+      );
+    }
     setPhase("payment");
   };
 
   return (
-    <div className={`p-10 ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
+    <div
+      className={`p-0 px-4 lg:p-10 ${
+        darkMode ? "text-gray-200" : "text-gray-800"
+      }`}
+    >
       <div className="mb-4">
         <h1 className="text-xl">Your name</h1>
         <input
@@ -90,8 +112,8 @@ function Shipping({ setPhase }) {
           onChange={(e) => setContactNumber(e.target.value)}
         />
       </div>
-      <div className="mb-4 flex flex-row items-center justify-around xs:flex-col xs:items-start xs:mt-10 xs: space-y-10 sm:flex-row  sm:space-y-0">
-        <div className>
+      <div className="flex flex-col lg:flex-row items-start lg:items-center lg:space-x-4">
+        <div className="flex flex-col flex-grow w-full">
           <h1 className="text-xl">Shipping method</h1>
           <select
             name="time"
@@ -122,35 +144,37 @@ function Shipping({ setPhase }) {
             </option>
           </select>
         </div>
-        <div className="mb-4">
-          <h1 className="text-xl">Available Dates:</h1>
-          <input
-            className="text-black h-10 cursor-pointer"
-            type="date"
-            name="date"
-            value={availableDate}
-            onChange={(e) => setAvailableDate(e.target.value)}
-          ></input>
-        </div>
-        <div className="mb-4">
-          <h1 className="text-xl">Preferred time</h1>
-          <select
-            name="time"
-            className="text-black h-10 cursor-pointer"
-            value={preferredTime}
-            onChange={(e) => setPreferredTime(e.target.value)}
-          >
-            <option value="" selected disabled>
-              Choose a time:
-            </option>
-            <option value="sunrise">9:00 - 11:59 AM</option>
-            <option value="noon">12:00 PM - 2.59 PM</option>
-            <option value="sunset">3.00 - 6.00 PM</option>
-          </select>
+        <div className="mt-4 lg:mt-0 flex flex-row items-center justify-start lg:justify-start space-x-4 w-full">
+          <div className="mb-4 lg:mb-0">
+            <h1 className="text-xl">Available Dates:</h1>
+            <input
+              className="text-black h-10 cursor-pointer"
+              type="date"
+              name="date"
+              value={availableDate}
+              onChange={(e) => setAvailableDate(e.target.value)}
+            ></input>
+          </div>
+          <div className="mb-4 lg:mb-0">
+            <h1 className="text-xl">Preferred time</h1>
+            <select
+              name="time"
+              className="text-black h-10 cursor-pointer"
+              value={preferredTime}
+              onChange={(e) => setPreferredTime(e.target.value)}
+            >
+              <option value="" selected disabled>
+                Choose a time:
+              </option>
+              <option value="sunrise">9:00 - 11:59 AM</option>
+              <option value="noon">12:00 PM - 2.59 PM</option>
+              <option value="sunset">3.00 - 6.00 PM</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <div className="mb-4">
+      <div className="my-4">
         <h1 className="text-xl">Shipping address:</h1>
         <input
           value={shippingAddress}

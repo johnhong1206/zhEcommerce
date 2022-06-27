@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -33,16 +34,19 @@ function Shopping({ setPhase }) {
 
   const add = (item) => {
     let ind = _.findIndex(cart, { id: item.id });
+    toast.success(`One set of ${item?.name} is added ...`);
     return dispatch(addQuantity(ind));
   };
 
   const remove = (item) => {
     if (item.quantity != 1) {
       let ind = _.findIndex(cart, { id: item.id });
+      toast.success(`One set of ${item?.name} is remove ...`);
       return dispatch(removeQuantity(ind));
     }
     let ind = _.findIndex(cart, { id: item.id });
     dispatch(removeFromCart(ind));
+    toast.success(`${item?.name} Remove from cart`);
   };
 
   const cartQty = () => {

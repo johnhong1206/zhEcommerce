@@ -111,13 +111,19 @@ function UserProfile() {
                   <p>Contact:</p>
                   {!edit ? (
                     <p className="text-gray-600 text-base tracking-widest">
-                      {userData?.contact}
+                      {!!userData?.contact === false
+                        ? "Please Update your Contact"
+                        : userData?.contact}
                     </p>
                   ) : (
                     <input
                       type="text"
                       className="w-full p-1 text-lg sm:text-xl md:text-2xl md:p-4  text-gray-900"
-                      placeholder={`${userData?.contact}`}
+                      placeholder={`${
+                        !!userData?.contact === false
+                          ? "Please Update your Contact"
+                          : userData?.contact
+                      }`}
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
                     />
@@ -133,13 +139,19 @@ function UserProfile() {
                   <p>Address:</p>
                   {!edit ? (
                     <p className="text-gray-600 text-base tracking-widest uppercase">
-                      {userData?.address}
+                      {!!userData?.address === false
+                        ? "Please Update your address"
+                        : userData?.address}
                     </p>
                   ) : (
                     <input
                       type="text"
                       className="w-full p-1 text-lg sm:text-xl md:text-2xl md:p-4  text-gray-900"
-                      placeholder={`${userData?.address}`}
+                      placeholder={`${
+                        !!userData?.address === false
+                          ? "Please Update your Address"
+                          : userData?.address
+                      }`}
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                     />

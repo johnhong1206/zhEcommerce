@@ -44,7 +44,7 @@ function Order({ products }) {
   }, [user, db]);
 
   return (
-    <div className={` ${darkMode ? "bg-gray-800" : "bg-gray-100"}`}>
+    <div className={`min-h-screen ${darkMode ? "bg-gray-800" : "bg-gray-100"}`}>
       <Head>
         <title>Zong Hong Ecommerce-{user?.displayName}-Orders</title>
         <link rel="icon" href="/favicon.ico" />
