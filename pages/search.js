@@ -67,6 +67,7 @@ function search({ products }) {
                   description={product?.description}
                   category={product?.category}
                   rating={product?.rating}
+                  product={product}
                 />
               ))}
               <div className="pb-10" />
