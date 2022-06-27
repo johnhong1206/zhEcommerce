@@ -64,22 +64,6 @@ function Shipping({ setPhase }) {
     };
     dispatch(updateShipping(payload));
 
-    if (!!contactNumber === false && contactNumber?.length > 0) {
-      db.collection("users").doc(user?.uid).set(
-        {
-          contact: contactNumber,
-        },
-        { merge: true }
-      );
-    }
-    if (!!shippingAddress === false && shippingAddress?.length > 0) {
-      db.collection("users").doc(user?.uid).set(
-        {
-          address: shippingAddress,
-        },
-        { merge: true }
-      );
-    }
     setPhase("payment");
   };
 
