@@ -313,8 +313,8 @@ function Payment({ setPhase }) {
         dispatch(emptycCart());
         dispatch(resetShipping());
         setPhase("done");
-        toast.success(`Your Order has been made`);
       });
+    toast.success(`Your Order has been made`);
   };
 
   const handleChange = (event) => {
