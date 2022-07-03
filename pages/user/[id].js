@@ -135,27 +135,29 @@ function UserProfile() {
                     {userData?.point}
                   </p>
                 </div>
-                <div className="flex flex-row items-center space-x-3">
+                <div className="flex flex-row items-center space-x-3 w-full overflow-hidden">
                   <p>Address:</p>
-                  {!edit ? (
-                    <p className="text-gray-600 text-base tracking-widest uppercase">
-                      {!!userData?.address === false
-                        ? "Please Update your address"
-                        : userData?.address}
-                    </p>
-                  ) : (
-                    <input
-                      type="text"
-                      className="w-full p-1 text-lg sm:text-xl md:text-2xl md:p-4  text-gray-900"
-                      placeholder={`${
-                        !!userData?.address === false
-                          ? "Please Update your Address"
-                          : userData?.address
-                      }`}
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                    />
-                  )}
+                  <div className="">
+                    {!edit ? (
+                      <p className="text-gray-600 text-base tracking-widest uppercase">
+                        {!!userData?.address === false
+                          ? "Please Update your address"
+                          : userData?.address}
+                      </p>
+                    ) : (
+                      <input
+                        type="text"
+                        className="w-full p-1 text-lg sm:text-xl md:text-2xl md:p-4  text-gray-900"
+                        placeholder={`${
+                          !!userData?.address === false
+                            ? "Please Update your Address"
+                            : userData?.address
+                        }`}
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

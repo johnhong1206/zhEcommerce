@@ -257,8 +257,7 @@ function Payment({ setPhase }) {
     // do all the fancy stripe stuff...
     event.preventDefault();
     setProcessing(true);
-    toast.loading(`Processing your payment , Please be patient...`);
-
+    toast.success(`Processing your payment , Please be patient...`);
     const payload = await stripe
       .confirmCardPayment(clientSecret, {
         payment_method: {
@@ -313,8 +312,8 @@ function Payment({ setPhase }) {
         dispatch(emptycCart());
         dispatch(resetShipping());
         setPhase("done");
+        toast.success(`Your Order has been made`);
       });
-    toast.success(`Your Order has been made`);
   };
 
   const handleChange = (event) => {
