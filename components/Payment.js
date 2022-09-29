@@ -267,13 +267,11 @@ function Payment({ setPhase }) {
       .then(({ paymentIntent }) => {
         // paymentIntent = payment confirmation
 
-        db.collection("users")
-          .doc(user?.uid)
-          .collection("orders")
+        db.collection("orders")
           .doc(paymentIntent.id)
           .set({
             cart: cart,
-            amount: paymentIntent.amount,
+            amount: paymentIntent.amount / 100,
             method: renderMethod(),
             availableDate: shipping?.availableDate,
             preferredTime: shipping?.preferredTime,
@@ -283,6 +281,15 @@ function Payment({ setPhase }) {
             code: verified && calculatediscount(),
             point: redem && coin,
             received: Boolean(false),
+            email: user?.email,
+            uid: user?.uid,
+            address: user?.address,
+            contact: user?.contact,
+            month: new Date().toLocaleString("default", {
+              month: "long",
+            }),
+            year: new Date().getFullYear(),
+            date: new Date().toISOString().split("T")[0],
           });
 
         if (verified) {
@@ -316,6 +323,15 @@ function Payment({ setPhase }) {
       });
   };
 
+  console.log(
+    "Month",
+    new Date().toLocaleString("default", {
+      month: "long",
+    })
+  );
+
+  console.log("year", new Date().getFullYear());
+
   const handleChange = (event) => {
     //Listen for changes in the Card Element
     //display any errors as the customer types their card details
@@ -329,6 +345,8 @@ function Payment({ setPhase }) {
     dispatch(cancleDiscount());
     setPhase("shipping");
   };
+
+  console.log(user);
 
   return (
     <div className={`p-4 ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
