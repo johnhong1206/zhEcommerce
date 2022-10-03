@@ -14,28 +14,24 @@ import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 //redux
 import { useSelector } from "react-redux";
 import { selectDarkmode } from "../features/darkmodeSlice";
-import { selectUser } from "../features/userSlice";
 
 function OrderItemList({ order, id }) {
   const darkMode = useSelector(selectDarkmode);
-  const timestamp = new Date(order.data.created.seconds * 1000).toUTCString();
-  const point = order?.data?.point;
-  const code = order?.data.code;
-  const received = order?.data.received;
-  const user = useSelector(selectUser);
-
-  console.log("order id", id);
+  const timestamp = new Date(order.created.seconds * 1000).toUTCString();
+  const point = order?.point;
+  const code = order?.code;
+  const received = order?.received;
 
   const toggleReceived = () => {
     if (!received) {
-      db.collection("users").doc(user?.uid).collection("orders").doc(id).set(
+      db.collection("orders").doc(id).set(
         {
           received: true,
         },
         { merge: true }
       );
     } else {
-      db.collection("users").doc(user?.uid).collection("orders").doc(id).set(
+      db.collection("orders").doc(id).set(
         {
           received: false,
         },
@@ -96,11 +92,11 @@ function OrderItemList({ order, id }) {
       )}
 
       <div className="flex flex-col lg:flex-row space-x-4 overflow-x-scroll scrollbar-hide">
-        {order.data.cart?.map((item) => (
+        {order.cart?.map((item) => (
           <OrderItem id={item.id} item={item} />
         ))}
         <div className="absolute bottom-4 right-10 font-bold hover:text-yellow-500">
-          <Currency quantity={order.data.amount / 100} currency="MYR" />
+          <Currency quantity={order.amount} currency="MYR" />
         </div>
       </div>
 

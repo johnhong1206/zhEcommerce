@@ -11,7 +11,7 @@ const Shipping = dynamic(() => import("./Shipping"));
 const Payment = dynamic(() => import("./Payment"));
 const Done = dynamic(() => import("./Done"));
 
-function CartPage() {
+function CartPage({ coupons }) {
   const darkMode = useSelector(selectDarkmode);
   const [phase, setPhase] = useState("shopping");
 
@@ -35,7 +35,7 @@ function CartPage() {
       </div>
       {phase == "shopping" && <Shopping setPhase={setPhase} />}
       {phase == "shipping" && <Shipping setPhase={setPhase} />}
-      {phase == "payment" && <Payment setPhase={setPhase} />}
+      {phase == "payment" && <Payment setPhase={setPhase} coupons={coupons} />}
       {phase == "done" && <Done />}
     </div>
   );

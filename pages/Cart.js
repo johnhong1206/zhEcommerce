@@ -1,5 +1,9 @@
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
+
+// firebase
+import db from "../config/firebase";
 
 //components
 const CartPage = dynamic(() => import("../components/CartPage"));
@@ -17,11 +21,12 @@ import { selectmenuIsOpen } from "../features/menuSlice";
 import { selectUser } from "../features/userSlice";
 import { selectDarkmode } from "../features/darkmodeSlice";
 
-function Cart() {
+function Cart({ coupons }) {
   const darkMode = useSelector(selectDarkmode);
   const promise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY);
   const MenuNav = useSelector(selectmenuIsOpen);
   const user = useSelector(selectUser);
+  const [code, setCode] = useState([]);
 
   return (
     <div>
@@ -38,7 +43,7 @@ function Cart() {
     `}
       >
         <Elements stripe={promise}>
-          <CartPage />
+          <CartPage coupons={coupons} />
         </Elements>
         {MenuNav && <Menu />}
       </div>
@@ -47,3 +52,22 @@ function Cart() {
 }
 
 export default Cart;
+export async function getServerSideProps({ res }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+  const ref = db.collection("coupon");
+
+  const couponRes = await ref.get();
+  const coupons = couponRes.docs.map((coupon) => ({
+    id: coupon.id,
+    ...coupon.data(),
+  }));
+
+  return {
+    props: {
+      coupons: coupons,
+    },
+  };
+}

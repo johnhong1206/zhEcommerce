@@ -22,13 +22,9 @@ import {
   selectCart,
 } from "../features/cartSlice";
 import {
-  selectDiscount10,
-  getDiscount10,
-  getDiscount20,
   cancleDiscount,
-  selectDiscount20,
-  getDiscount10percent,
-  selectDiscount10percent,
+  getDiscount,
+  selectDiscount,
 } from "../features/discountSlice";
 import {
   getPricePoint,
@@ -48,7 +44,7 @@ import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { selectDarkmode } from "../features/darkmodeSlice";
 
-function Payment({ setPhase }) {
+function Payment({ setPhase, coupons }) {
   const dispatch = useDispatch();
   const darkMode = useSelector(selectDarkmode);
   const stripe = useStripe();
@@ -65,6 +61,7 @@ function Payment({ setPhase }) {
   const [code, setCode] = useState("");
   const [errorCode, setErrorCode] = useState("");
   const [userData, setUserData] = useState([]);
+  const [availableCode, setAvailableCode] = useState(true);
 
   //const pricePoint = calcTotalCost();
   //const [userPoint, setUserPoint] = useState(0);
@@ -75,11 +72,7 @@ function Payment({ setPhase }) {
   const newFinalPoint = useSelector(selectFinalPoint);
   const [redem, setRedem] = useState(false);
   const [coin, setCoin] = useState(Number(0));
-
-  ///discount
-  const discount10 = useSelector(selectDiscount10);
-  const discount20 = useSelector(selectDiscount20);
-  const discount10percent = useSelector(selectDiscount10percent);
+  const discount = useSelector(selectDiscount);
 
   //price
   const finalPrice = useSelector(selectFinalPrice);
@@ -121,29 +114,21 @@ function Payment({ setPhase }) {
   }, [userData, pricePoint, finalPoint]);
 
   const verifiedCode = () => {
-    if (!checkCode(code)) {
-      if (code === "super10") {
-        dispatch(getDiscount10(true));
+    const checkdbCode = coupons.find((coupon) => coupon.code === code);
+    console.log("dheck", checkdbCode);
+    if (!!checkdbCode == false) {
+      setCode("");
+      setErrorCode("Code Not Exists, Please try agian");
+    } else {
+      if (!checkCode(code)) {
+        dispatch(getDiscount(checkdbCode));
         setVerified(true);
-      } else if (code === "super20") {
-        dispatch(getDiscount20(true));
-        setVerified(true);
-      } else if (code === "ultra10") {
-        dispatch(getDiscount10percent(true));
-        setVerified(true);
-      } else if (code === "") {
-        setCode("");
-        setErrorCode("Plese Enter the code");
       } else {
         setCode("");
-        setErrorCode("Wrong Code please try agian");
+        setErrorCode("Code used please try agian");
       }
-    } else {
-      setCode("");
-      setErrorCode("Code used please try agian");
     }
   };
-
   const redemUserPoint = () => {
     if (!redem) {
       setRedem(true);
@@ -205,18 +190,28 @@ function Payment({ setPhase }) {
       totalCost = totalCost + item.quantity * item.price;
     });
     let newCost = totalCost + shipping?.shippingCost - coin;
-    let discountPercent10 = Number(totalCost) * 0.1;
 
-    if (discount10) {
-      return newCost - 10;
-    } else if (discount20) {
-      return newCost - 20;
-    } else if (discount10percent) {
-      return newCost - discountPercent10;
+    if (discount?.code) {
+      if (discount?.series === "super") {
+        return newCost - discount?.value;
+      } else if (discount?.series === "ultra") {
+        let discountPercent = Number(newCost) * Number(discount.value);
+        console.log(
+          "newCost",
+          newCost,
+          discountPercent,
+          newCost - discountPercent
+        );
+        return Number(newCost) - Number(discountPercent);
+      }
     } else {
       return newCost;
     }
   };
+
+  useEffect(() => {
+    calcTotalCostWithShipping();
+  }, []);
 
   useEffect(() => {
     dispatch(addFinalPrice(calcTotalCostWithShipping()));
@@ -227,14 +222,14 @@ function Payment({ setPhase }) {
     cart.forEach((item) => {
       totalCost = totalCost + item.quantity * item.price;
     });
-    if (discount10) {
-      return 10;
+    if (discount?.series === "super") {
+      return discount?.value;
     }
-    if (discount20) {
-      return 20;
-    }
-    if (discount10percent) {
-      return (totalCost + shipping?.shippingCost) * 0.1;
+
+    if (discount?.series === "ultra") {
+      return (
+        Number(totalCost + shipping?.shippingCost) * Number(discount.value)
+      );
     }
   };
 
@@ -323,15 +318,6 @@ function Payment({ setPhase }) {
       });
   };
 
-  console.log(
-    "Month",
-    new Date().toLocaleString("default", {
-      month: "long",
-    })
-  );
-
-  console.log("year", new Date().getFullYear());
-
   const handleChange = (event) => {
     //Listen for changes in the Card Element
     //display any errors as the customer types their card details
@@ -345,8 +331,6 @@ function Payment({ setPhase }) {
     dispatch(cancleDiscount());
     setPhase("shipping");
   };
-
-  console.log(user);
 
   return (
     <div className={`p-4 ${darkMode ? "text-gray-200" : "text-gray-800"}`}>

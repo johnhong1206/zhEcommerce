@@ -6,6 +6,7 @@ export const discountSlice = createSlice({
     discount10: false,
     discount20: false,
     discount10percent: false,
+    discount: null,
   },
   reducers: {
     getDiscount10: (state, action) => {
@@ -17,10 +18,14 @@ export const discountSlice = createSlice({
     getDiscount10percent: (state, action) => {
       state.discount10percent = action.payload;
     },
+    getDiscount: (state, action) => {
+      state.discount = action.payload;
+    },
     cancleDiscount: (state) => {
       state.discount10 = false;
       state.discount20 = false;
       state.discount10percent = false;
+      state.discount = null;
     },
   },
 });
@@ -29,9 +34,11 @@ export const {
   getDiscount10,
   getDiscount20,
   getDiscount10percent,
+  getDiscount,
   cancleDiscount,
 } = discountSlice.actions;
 
+export const selectDiscount = (state) => state.discount.discount;
 export const selectDiscount10 = (state) => state.discount.discount10;
 export const selectDiscount20 = (state) => state.discount.discount20;
 export const selectDiscount10percent = (state) =>

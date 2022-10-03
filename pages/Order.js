@@ -25,23 +25,26 @@ function Order({ products }) {
   const MenuNav = useSelector(selectmenuIsOpen);
 
   useEffect(() => {
-    if (user) {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("orders")
-        .orderBy("created", "desc")
-        .onSnapshot((snapshot) =>
-          setOrders(
-            snapshot.docs.map((doc) => ({
-              id: doc.id,
-              data: doc.data(),
-            }))
-          )
-        );
-    } else {
-      setOrders([]);
-    }
-  }, [user, db]);
+    let unsubscribe;
+    const fetchOrders = async () => {
+      if (user) {
+        db.collection("orders")
+          .orderBy("created", "desc")
+          .onSnapshot((snapshot) =>
+            setOrders(
+              snapshot?.docs
+                .filter((doc) => doc?.data().email === user?.email)
+                .map((doc) => ({
+                  id: doc.id,
+                  ...doc?.data(),
+                }))
+            )
+          );
+      }
+    };
+    fetchOrders();
+    return unsubscribe;
+  }, [db, user]);
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-800" : "bg-gray-100"}`}>

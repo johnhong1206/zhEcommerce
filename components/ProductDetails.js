@@ -88,7 +88,7 @@ function ProductDetails({
       <Fade bottom>
         <div>
           <div
-            className={` p-10 mb-10 shadow-2xl  ${
+            className={` py-2 mb-10 shadow-2xl  ${
               darkMode ? "bg-gray-600" : "bg-gray-300"
             }`}
           >
